@@ -1,0 +1,11 @@
+# The main job for tag_policies.
+resources:
+  jobs:
+    tag_policies_job:
+      name: tag_policies_job
+
+      tasks:
+        - task_key: notebook_task
+          notebook_task:
+            notebook_path: ../src/notebook.ipynb
+
