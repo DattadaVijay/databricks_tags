@@ -5,13 +5,13 @@ from pyspark.sql.types import StructType, StructField, StringType, DateType
 
 # COMMAND ----------
 schema = StructType([
-    StructField("customer_id", StringType(), True),
-    StructField("first_name", StringType(), True),
-    StructField("last_name", StringType(), True),
-    StructField("email", StringType(), True),
-    StructField("phone_number", StringType(), True),
-    StructField("date_of_birth", StringType(), True),
-    StructField("country", StringType(), True)
+    StructField("customer_id", StringType(), True, metadata={"comment": "Unique customer identifier"}),
+    StructField("first_name", StringType(), True, metadata={"comment": "Customer first name"}),
+    StructField("last_name", StringType(), True, metadata={"comment": "Customer last name"}),
+    StructField("email", StringType(), True, metadata={"comment": "Customer email address, PII"}),
+    StructField("phone_number", StringType(), True, metadata={"comment": "Customer phone number"}),
+    StructField("date_of_birth", StringType(), True, metadata={"comment": "Customer date of birth"}),
+    StructField("country", StringType(), True), metadata={"comment": "Customer demographic data"}
 ])
 
 data = [
