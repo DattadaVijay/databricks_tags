@@ -7,5 +7,5 @@ resources:
       tasks:
         - task_key: notebook_task
           notebook_task:
-            notebook_path: ../src/notebook.ipynb
+            notebook_path: ../src/load.py
 
