@@ -10,7 +10,7 @@ schema = StructType([
     StructField("last_name", StringType(), True),
     StructField("email", StringType(), True),
     StructField("phone_number", StringType(), True),
-    StructField("date_of_birth", DateType(), True),
+    StructField("date_of_birth", StringType(), True),
     StructField("country", StringType(), True)
 ])
 
