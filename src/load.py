@@ -11,7 +11,7 @@ schema = StructType([
     StructField("email", StringType(), True, metadata={"comment": "Customer email address, PII"}),
     StructField("phone_number", StringType(), True, metadata={"comment": "Customer phone number"}),
     StructField("date_of_birth", StringType(), True, metadata={"comment": "Customer date of birth"}),
-    StructField("country", StringType(), True), metadata={"comment": "Customer demographic data"}
+    StructField("country", StringType(), True, metadata={"comment": "Customer demographic data"})
 ])
 
 data = [
