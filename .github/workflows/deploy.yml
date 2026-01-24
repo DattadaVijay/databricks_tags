@@ -26,12 +26,15 @@ jobs:
       - name: Setup datacontract CLI
         run: |
           pip install datacontract-cli[databricks]
-          datacontract test fixtures/datacontract.yml --server databricks_workspace
+
+      - name: convert to ocds
+        run: |
+          datacontract export fixtures/datacontract.yml --format odcs
 
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Deploy Databricks bundle
         run: databricks bundle deploy --auto-approve
