@@ -23,6 +23,7 @@ jobs:
       - name: Setup datacontract CLI
         run: |
           pip install datacontract-cli soda-core-spark soda-core-databricks
+          datacontract test fixtures/datacontract.yml --server dev_workspace
 
       - name: Setup python
         uses: actions/setup-python@v5
