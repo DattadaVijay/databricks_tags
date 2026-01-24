@@ -29,7 +29,7 @@ jobs:
 
       - name: convert to ocds
         run: |
-          datacontract export fixtures/datacontract.yml --format odcs --output fixtures/odcs.yaml
+          datacontract export fixtures/datacontract.yml --format odcs --output fixtures/conerted_odcs.yaml
 
       - name: Setup python
         uses: actions/setup-python@v5
