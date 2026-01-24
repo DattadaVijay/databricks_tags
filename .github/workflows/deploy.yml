@@ -20,6 +20,11 @@ jobs:
       - name: Setup databricks CLI
         uses: databricks/setup-cli@v0.277.0
 
+      - name: Setup datacontract CLI
+        run: |
+          pip install datacontrcat-cli
+          datacontract test contracts/datacontract.yml --server dev_workspace
+
       - name: Setup python
         uses: actions/setup-python@v5
         with:
