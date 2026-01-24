@@ -22,7 +22,7 @@ jobs:
 
       - name: Setup datacontract CLI
         run: |
-          pip install datacontrcat-cli
+          pip install datacontract-cli
           datacontract test fixtures/datacontract.yml --server dev_workspace
 
       - name: Setup python
