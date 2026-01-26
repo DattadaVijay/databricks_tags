@@ -12,7 +12,7 @@ schema = StructType([
     StructField("date_of_birth", StringType(), True, metadata={"comment": "Customer date of birth"}),
     StructField("country", StringType(), True, metadata={"comment": "Customer demographic data"})
 ])
-
+#
 data = [
     ("C001","John","Adams","john.adams@example.com","555-201-1111","1985-01-12","US"),
     ("C002","Sarah","Brown","sarah.brown@example.com","555-202-1112","1990-04-22","CA"),
