@@ -12,7 +12,7 @@ servers:
     schema: default
 
 models:
-  bronze_orders: # This matches your table name
+  bronze_orders: 
     type: table
     streaming: true
     fields:

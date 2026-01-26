@@ -1,0 +1,48 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: my-data-contract-id
+name: My Data Contract
+version: 1.0.0
+status: draft
+
+team:
+ name: tag policies
+
+description:
+ purpose: To test if the incoming data is as per the Contract
+ usage: Intended to test upstream source data
+ limitations: None as of now
+
+schema:
+ - name: bronze_orders
+   description: Raw bronze Orders
+   tags:
+    - streaming
+    - append only
+   properties:
+    - event_type:
+        type: string
+        enum: [OrderCreated, OrderCancelled]
+    - order_id:
+        type: string
+        required: true
+    - customer_id:
+        type: string
+    - order_ts:
+        type: timestamp
+    - channel:
+        type: string
+        enum: [web, mobile]
+
+servers:
+ - server: databricks_workspace
+   type: databricks
+   host: https://dbc-e3761da8-7d95.cloud.databricks.com/
+   catalog: Workspace
+   schema: default
+
+slaProperties:
+ - property: latency
+   value: 1h
+ - property: availability
+   value: 99.9%
