@@ -35,9 +35,6 @@ jobs:
         run: |
           datacontract export fixtures/odcs.yml --format html --output fixtures/contract_web_file.html
 
-      - name: test the contract on the table
-        run: datacontract test fixtures/odcs.yml
-
       - name: Setup python
         uses: actions/setup-python@v5
         with:
@@ -45,3 +42,6 @@ jobs:
 
       - name: Deploy Databricks bundle
         run: databricks bundle deploy --auto-approve
+
+      - name: test the contract on the table
+        run: datacontract test fixtures/odcs.yml
