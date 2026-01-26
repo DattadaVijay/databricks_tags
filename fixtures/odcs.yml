@@ -1,12 +1,12 @@
 apiVersion: v3.1.0
 kind: DataContract
 id: my-data-contract-id
-name: Bronze Orders Data Contract
+name: My Data Contract
 version: 1.0.0
 status: draft
 
 team:
-  name: tag-policies
+  name: tag policies
 
 description:
   purpose: >
@@ -16,52 +16,50 @@ description:
     Intended to validate upstream source data before further transformation
     into silver and gold layers.
   limitations: >
-    This contract does not enforce business-level aggregations or downstream
-    analytics logic.
+    This contract does not enforce business-level aggregations or downstream SLAs.
 
-models:
-  bronze_orders:
-    type: table
+schema:
+  - name: bronze_orders
     description: >
       Raw bronze orders table containing event-level order data ingested
       from upstream systems.
+    properties:
+      - event_type:
+          type: string
+          description: >
+            Type of order event emitted by the source system.
+          enum:
+            - OrderCreated
+            - OrderCancelled
+          required: true
 
-    tags:
-      - bronze
-      - events
-      - append-only
+      - order_id:
+          type: string
+          description: >
+            Unique identifier of the order across the platform.
+          required: true
 
-    fields:
-      event_type:
-        type: string
-        description: Type of order event emitted by the source system.
-        enum:
-          - OrderCreated
-          - OrderCancelled
-        required: true
+      - customer_id:
+          type: string
+          description: >
+            Unique identifier of the customer who placed the order.
+          required: false
 
-      order_id:
-        type: string
-        description: Unique identifier of the order.
-        required: true
+      - order_ts:
+          type: timestamp
+          description: >
+            Timestamp when the order event occurred in the source system.
+            Represents event time, not ingestion time.
+          required: true
 
-      customer_id:
-        type: string
-        description: Identifier of the customer who placed the order.
-        required: false
-
-      order_ts:
-        type: timestamp
-        description: Event time when the order action occurred.
-        required: true
-
-      channel:
-        type: string
-        description: Channel through which the order was placed.
-        enum:
-          - web
-          - mobile
-        required: false
+      - channel:
+          type: string
+          description: >
+            Channel through which the order was placed.
+          enum:
+            - web
+            - mobile
+          required: false
 
 servers:
   - server: databricks_workspace
@@ -72,9 +70,12 @@ servers:
 
 slaProperties:
   - property: latency
-    description: Maximum acceptable delay from event time to availability.
+    description: >
+      Maximum acceptable delay between source event time and availability
+      in the bronze table.
     value: 1h
 
   - property: availability
-    description: Expected availability of the dataset.
+    description: >
+      Percentage of time the dataset is expected to be available for consumption.
     value: 99.9%
