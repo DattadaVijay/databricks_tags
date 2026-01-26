@@ -10,8 +10,8 @@ team:
 
 description:
   purpose: >
-    Validate that incoming bronze-layer order data conforms to the agreed
-    schema and semantic expectations.
+    Validate that incoming bronze-layer order data conforms to the agreed schema
+    and semantic expectations.
   usage: >
     Intended to validate upstream source data before further transformation
     into silver and gold layers.
@@ -34,8 +34,7 @@ models:
     fields:
       event_type:
         type: string
-        description: >
-          Type of order event emitted by the source system.
+        description: Type of order event emitted by the source system.
         enum:
           - OrderCreated
           - OrderCancelled
@@ -43,27 +42,22 @@ models:
 
       order_id:
         type: string
-        description: >
-          Unique identifier of the order across the platform.
+        description: Unique identifier of the order.
         required: true
 
       customer_id:
         type: string
-        description: >
-          Unique identifier of the customer who placed the order.
+        description: Identifier of the customer who placed the order.
         required: false
 
       order_ts:
         type: timestamp
-        description: >
-          Timestamp when the order event occurred in the source system.
-          Represents event time, not ingestion time.
+        description: Event time when the order action occurred.
         required: true
 
       channel:
         type: string
-        description: >
-          Channel through which the order was placed.
+        description: Channel through which the order was placed.
         enum:
           - web
           - mobile
@@ -78,12 +72,9 @@ servers:
 
 slaProperties:
   - property: latency
-    description: >
-      Maximum acceptable delay between source event time and availability
-      in the bronze table.
+    description: Maximum acceptable delay from event time to availability.
     value: 1h
 
   - property: availability
-    description: >
-      Percentage of time the dataset is expected to be available for consumption.
+    description: Expected availability of the dataset.
     value: 99.9%
