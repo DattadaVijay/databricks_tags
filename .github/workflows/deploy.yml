@@ -20,6 +20,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Setup databricks CLI
         uses: databricks/setup-cli@v0.277.0
 
@@ -34,11 +39,6 @@ jobs:
       - name: convert the odcs to html
         run: |
           datacontract export fixtures/odcs.yml --format html --output fixtures/contract_web_file.html
-
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
 
       - name: Deploy Databricks bundle
         run: databricks bundle deploy --auto-approve
