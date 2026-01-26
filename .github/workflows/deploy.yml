@@ -30,7 +30,11 @@ jobs:
       - name: convert to ocds
         run: |
           datacontract export fixtures/datacontract.yml --format odcs --output fixtures/conerted_odcs.yaml
-
+      
+      - name: convert the odcs to html
+        run: |
+          datacontract export fixtures/odcs.yml --format html --output fixtures/contract_web_file.html
+          
       - name: Setup python
         uses: actions/setup-python@v5
         with:
