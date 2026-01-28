@@ -10,6 +10,8 @@ resources:
             notebook_path: ../src/load.py
 
         - task_key: data_contract_test
+          depends_on:
+            - task_key: data_ingestion
           notebook_task:
             notebook_path: ../src/data_check.py
 
