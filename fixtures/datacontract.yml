@@ -3,50 +3,43 @@ id: bronze-orders-contract
 info:
   title: Bronze Orders Contract
   version: 1.0.0
-  description: |
-    This contract governs the raw ingestion of order events into the Bronze layer.
-    It ensures that the landing zone data is structured correctly before being 
-    processed into Silver/Gold tables.
+  description: "Data contract for the raw bronze orders table as verified in Databricks."
 
 servers:
   dev:
     host: dbc-e3761da8-7d95.cloud.databricks.com
     type: databricks
-    catalog: Workspace
+    catalog: workspace
     schema: default
 
 models:
   bronze_orders: 
     type: table
-    streaming: true
-    description: "The raw table containing immutable order event logs from the web shop."
+    description: "Raw ingestion table for order lifecycle events."
     fields:
       event_type:
         type: string
-        description: "The specific lifecycle event (e.g., Created, Cancelled)."
+        description: "The type of event (e.g., OrderCreated, OrderCancelled)."
         enum: [OrderCreated, OrderCancelled]
       order_id:
         type: string
-        description: "The business ID for the order. Expected to be non-unique in Bronze due to event logging."
+        description: "The business identifier for the order."
         required: true
       customer_id:
         type: string
-        description: "Reference ID for the customer who placed the order."
+        description: "The unique identifier for the customer."
       order_ts:
         type: timestamp
-        description: "The UTC event time. Renamed from order_timestamp to match physical table."
+        description: "The UTC timestamp of the event."
       channel:
         type: string
-        description: "The platform source of the transaction."
+        description: "The source channel of the order (web or mobile)."
         enum: [web, mobile]
     
     checks:
       - name: check_not_empty
-        description: "Safety check to ensure ingestion hasn't stalled (expects at least 1 row)."
+        description: "Ensures the table contains data."
         must: count(*) > 0
-      
-      - name: unique_order_event
-        description: |
-          In Bronze, order_id is NOT unique because one order can have multiple events.
-          This check ensures that we don't have duplicate identical events for the same order.
+      - name: unique_event_check
+        description: "Ensures that the combination of order_id and event_type is unique."
         must: count(*) = count(distinct order_id, event_type)
