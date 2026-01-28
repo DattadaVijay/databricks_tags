@@ -42,7 +42,7 @@ schema:
         required: false
 
 servers:
-  - server: dev
+  dev:
     type: databricks
     catalog: Workspace
     schema: default
