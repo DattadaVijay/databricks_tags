@@ -11,5 +11,5 @@ resources:
 
         - task_key: data_contract_test
           notebook_task:
-            notebook_path: ../src.data_check.py
+            notebook_path: ../src/data_check.py
 
