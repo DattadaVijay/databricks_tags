@@ -2,54 +2,65 @@ version: 1.0.0
 kind: DataContract
 apiVersion: v3.1.0
 
-id: my-data-contract-id
-name: Bronze Orders Data Contract
-status: draft
+id: orders
+name: Orders
+status: active
 
 description:
-  purpose: Validate incoming bronze-layer order data.
-  usage: Intended to validate upstream source data before transformation.
-  limitations: Does not enforce business-level aggregations.
+  purpose: "Provides order and line item data for analytics and reporting"
+  usage: "Used by analytics team for sales analysis and business intelligence"
+  limitations: "Contains only the last 2 years of data"
 
 schema:
-  - name: bronze_orders
-    description: Raw bronze orders table containing event-level order data.
+  - name: bronze_orders 
+    physicalType: TABLE
+    description: All historic web shop orders since 2020-01-01.
     properties:
       - name: order_id
-        description: Unique identifier of the order across the platform.
         logicalType: string
+        description: The internal order id.
+        primaryKey: true
         required: true
         unique: true
-
-      - name: event_type
-        description: Type of order event emitted by the source system.
-        logicalType: string
-        required: true
-
       - name: customer_id
-        description: Unique identifier of the customer who placed the order.
         logicalType: string
-        required: false
-
-      - name: order_ts
-        description: Timestamp when the order event occurred in the source system.
-        logicalType: timestamp
         required: true
-
-      - name: channel
-        description: Channel through which the order was placed.
+      - name: order_total
+        logicalType: integer
+        required: true
+      - name: order_timestamp
+        logicalType: timestamp
+      - name: order_status
         logicalType: string
-        required: false
+        quality:
+          - type: library
+            metric: invalidValues
+            arguments:
+              validValues:
+                - pending
+                - paid
+                - processing
+                - shipped
+                - delivered
+                - cancelled
+                - refunded
+            mustBe: 0
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 100
+        description: Ensure table is not empty.
 
 servers:
   - server: dev
     type: databricks
-    host: https://dbc-e3761da8-7d95.cloud.databricks.com/
+    host: dbc-e3761da8-7d95.cloud.databricks.com
     catalog: workspace
-    schema: default
+    schema: default 
 
 slaProperties:
-  - property: latency
-    value: 1h
   - property: availability
     value: 99.9%
+  - property: freshness
+    value: "24"
+    unit: hours
