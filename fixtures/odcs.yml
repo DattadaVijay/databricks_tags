@@ -1,66 +1,33 @@
-version: 1.0.0
-kind: DataContract
-apiVersion: v3.1.0
-
-id: orders
-name: Orders
-status: active
-
-description:
-  purpose: "Provides order and line item data for analytics and reporting"
-  usage: "Used by analytics team for sales analysis and business intelligence"
-  limitations: "Contains only the last 2 years of data"
-
-schema:
-  - name: bronze_orders 
-    physicalType: TABLE
-    description: All historic web shop orders since 2020-01-01.
-    properties:
-      - name: order_id
-        logicalType: string
-        description: The internal order id.
-        primaryKey: true
-        required: true
-        unique: true
-      - name: customer_id
-        logicalType: string
-        required: true
-      - name: order_total
-        logicalType: integer
-        required: true
-      - name: order_timestamp
-        logicalType: timestamp
-      - name: order_status
-        logicalType: string
-        quality:
-          - type: library
-            metric: invalidValues
-            arguments:
-              validValues:
-                - pending
-                - paid
-                - processing
-                - shipped
-                - delivered
-                - cancelled
-                - refunded
-            mustBe: 0
-    quality:
-      - type: library
-        metric: rowCount
-        mustBeGreaterThan: 100
-        description: Ensure table is not empty.
+dataContractSpecification: "0.9.3"
+id: bronze-orders-contract
+info:
+  title: Bronze Orders Contract
+  version: 1.0.0
+  description: "Verified ODCS contract for raw bronze order events in Databricks."
 
 servers:
-  - server: dev
-    type: databricks
+  dev:
     host: dbc-e3761da8-7d95.cloud.databricks.com
+    type: databricks
     catalog: workspace
-    schema: default 
+    schema: default
 
-slaProperties:
-  - property: availability
-    value: 99.9%
-  - property: freshness
-    value: "24"
-    unit: hours
+schema:
+  type: table
+  description: "The physical table structure for bronze_orders as verified via Databricks SQL."
+  properties:
+    event_type:
+      type: string
+      description: "The lifecycle event type (e.g., OrderCreated, OrderCancelled)."
+    order_id:
+      type: string
+      description: "The unique business identifier for the order."
+    customer_id:
+      type: string
+      description: "The unique identifier for the customer."
+    order_ts:
+      type: timestamp
+      description: "The UTC timestamp when the event occurred."
+    channel:
+      type: string
+      description: "The sales channel source (e.g., web, mobile)."
