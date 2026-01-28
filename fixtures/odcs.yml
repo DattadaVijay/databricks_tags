@@ -4,39 +4,54 @@ id: bronze-orders-contract
 name: Bronze Orders
 version: 1.0.0
 status: active
-description: "Data contract for raw bronze order events, matching the physical schema in Databricks."
-
-servers:
-  - server: dev
-    host: dbc-e3761da8-7d95.cloud.databricks.com
-    type: databricks
-    catalog: workspace
-    schema: default
+description:
+  purpose: "Ingest raw order events from the web shop into the lakehouse"
+  usage: "Used as the source of truth for all downstream Silver and Gold order tables"
+  limitations: "Raw events; may contain duplicates and un-scrubbed data"
 
 schema:
   - name: bronze_orders
     physicalType: TABLE
-    description: "The primary table for order lifecycle events."
+    description: "Raw table containing order lifecycle events as verified in the workspace catalog."
     properties:
       - name: order_id
-        description: "Business identifier for the order."
         logicalType: string
+        description: "The business identifier for the order."
         required: true
+        primaryKey: true
       - name: customer_id
+        logicalType: string
         description: "Reference identifier for the customer."
-        logicalType: string
+        required: true
       - name: order_ts
-        description: "UTC event timestamp."
         logicalType: timestamp
+        description: "The UTC timestamp of the event."
+        required: true
       - name: event_type
-        description: "The lifecycle stage of the order."
         logicalType: string
-        enum:
+        description: "The type of event logged."
+        examples:
           - OrderCreated
           - OrderCancelled
       - name: channel
-        description: "The source platform of the event."
         logicalType: string
-        enum:
+        description: "The source platform of the event."
+        examples:
           - web
           - mobile
+
+quality:
+  - type: row_count
+    must_be_greater_than: 0
+    description: "Ensure the ingestion pipeline is active."
+
+servers:
+  - server: dev
+    type: databricks
+    host: dbc-e3761da8-7d95.cloud.databricks.com
+    catalog: workspace
+    schema: default
+
+team:
+  name: data-engineering
+  description: "This data product is owned by the Data Engineering team."
