@@ -5,8 +5,8 @@ info:
   version: 1.0.0
 
 servers:
-  databricks_workspace:
-    host: https://dbc-e3761da8-7d95.cloud.databricks.com/
+  dev:
+    host: dbc-e3761da8-7d95.cloud.databricks.com
     type: databricks
     catalog: Workspace
     schema: default
@@ -15,23 +15,31 @@ models:
   bronze_orders: 
     type: table
     streaming: true
+    description: "Raw ingestion table for order events"
     fields:
       event_type:
         type: string
+        description: "The stage of the order lifecycle"
         enum: [OrderCreated, OrderCancelled]
       order_id:
         type: string
+        description: "The business identifier for the order"
         required: true
       customer_id:
         type: string
+        description: "Unique identifier for the customer"
       order_ts:
         type: timestamp
+        description: "The UTC timestamp when the event occurred"
       channel:
         type: string
+        description: "The source platform of the order"
         enum: [web, mobile]
     
     checks:
       - name: check_not_empty
+        description: "Ensures the table is receiving data"
         must: count(*) > 0
-      - name: unique_order_id
-        must: count(order_id) = count(distinct order_id)
+      - name: unique_event
+        description: "Ensures no duplicate events for the same order ID"
+        must: count(*) = count(distinct order_id, event_type)
