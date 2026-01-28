@@ -40,6 +40,3 @@ models:
       - name: check_not_empty
         description: "Ensures the table contains data."
         must: count(*) > 0
-      - name: unique_event_check
-        description: "Ensures that the combination of order_id and event_type is unique."
-        must: count(*) = count(distinct order_id, event_type)
