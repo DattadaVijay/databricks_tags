@@ -39,11 +39,11 @@ schema:
         examples:
           - web
           - mobile
-
-quality:
-  - type: row_count
-    must_be_greater_than: 0
-    description: "Ensure the ingestion pipeline is active."
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        description: "Ensure the ingestion pipeline is active and returning rows."
 
 servers:
   - server: dev
