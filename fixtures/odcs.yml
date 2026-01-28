@@ -1,9 +1,10 @@
-dataContractSpecification: "0.9.3"
+apiVersion: v3.1.0
+kind: DataContract
 id: bronze-orders-contract
-info:
-  title: Bronze Orders Contract
-  version: 1.0.0
-  description: "Verified ODCS contract for raw bronze order events in Databricks."
+name: Bronze Orders
+version: 1.0.0
+status: active
+description: "Data contract for raw bronze order events, matching the physical schema in Databricks."
 
 servers:
   dev:
@@ -13,21 +14,29 @@ servers:
     schema: default
 
 schema:
-  type: table
-  description: "The physical table structure for bronze_orders as verified via Databricks SQL."
-  properties:
-    event_type:
-      type: string
-      description: "The lifecycle event type (e.g., OrderCreated, OrderCancelled)."
-    order_id:
-      type: string
-      description: "The unique business identifier for the order."
-    customer_id:
-      type: string
-      description: "The unique identifier for the customer."
-    order_ts:
-      type: timestamp
-      description: "The UTC timestamp when the event occurred."
-    channel:
-      type: string
-      description: "The sales channel source (e.g., web, mobile)."
+  - name: bronze_orders
+    physicalType: TABLE
+    description: "The primary table for order lifecycle events."
+    properties:
+      - name: order_id
+        description: "Business identifier for the order."
+        logicalType: string
+        required: true
+      - name: customer_id
+        description: "Reference identifier for the customer."
+        logicalType: string
+      - name: order_ts
+        description: "UTC event timestamp."
+        logicalType: timestamp
+      - name: event_type
+        description: "The lifecycle stage of the order."
+        logicalType: string
+        enum:
+          - OrderCreated
+          - OrderCancelled
+      - name: channel
+        description: "The source platform of the event."
+        logicalType: string
+        enum:
+          - web
+          - mobile
