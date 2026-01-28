@@ -8,7 +8,7 @@ servers:
   databricks_workspace:
     host: https://dbc-e3761da8-7d95.cloud.databricks.com/
     type: databricks
-    catalog: Workspace
+    catalog: workspace
     schema: default
 
 models:
