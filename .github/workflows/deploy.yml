@@ -13,10 +13,6 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-      DATACONTRACT_DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      DATACONTRACT_DATABRICKS_SERVER_HOSTNAME: ${{ secrets.DATABRICKS_HOST }}
-      DATACONTRACT_DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }} 
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -31,11 +27,12 @@ jobs:
 
       - name: Setup datacontract CLI
         run: |
-          pip install datacontract-cli[databricks]
+          # Adding pyarrow and explicitly upgrading the connector solves the 'session' bug
+          pip install "datacontract-cli[databricks]" pyarrow databricks-sql-connector
 
       - name: convert to ocds
         run: |
-          datacontract export fixtures/datacontract.yml --format odcs --output fixtures/conerted_odcs.yaml
+          datacontract export fixtures/datacontract.yml --format odcs --output fixtures/converted_odcs.yaml
       
       - name: convert the odcs to html
         run: |
@@ -45,4 +42,12 @@ jobs:
         run: databricks bundle deploy --auto-approve
 
       - name: test the contract on the table
-        run: datacontract test fixtures/odcs.yml
+        run: |
+          # STRIP 'https://' - This is the most common cause of the AttributeError
+          CLEAN_HOST=$(echo "${{ secrets.DATABRICKS_HOST }}" | sed -e 's|^https://||' -e 's|/$||')
+          
+          # Run test with hardcoded Warehouse ID path
+          DATACONTRACT_DATABRICKS_SERVER_HOSTNAME=$CLEAN_HOST \
+          DATACONTRACT_DATABRICKS_HTTP_PATH="/sql/1.0/warehouses/ece081f3bd7cb8a7" \
+          DATACONTRACT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+          datacontract test fixtures/odcs.yml
