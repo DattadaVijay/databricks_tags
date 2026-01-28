@@ -44,6 +44,7 @@ schema:
 servers:
   - server: dev
     type: databricks
+    host: https://dbc-e3761da8-7d95.cloud.databricks.com/
     catalog: workspace
     schema: default
 
