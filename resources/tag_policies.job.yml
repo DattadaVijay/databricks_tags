@@ -5,7 +5,11 @@ resources:
       name: tag_policies_job
 
       tasks:
-        - task_key: notebook_task
+        - task_key: data_ingestion
           notebook_task:
             notebook_path: ../src/load.py
+
+        - task_key: data_contract_test
+          notebook_task:
+            notebook_path: ../src.data_check.py
 
