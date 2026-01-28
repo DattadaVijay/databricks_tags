@@ -1,7 +1,7 @@
 # Databricks notebook source
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, DateType
-
+#
 # COMMAND ----------
 schema = StructType([
     StructField("customer_id", StringType(), True, metadata={"comment": "Unique customer identifier"}),
