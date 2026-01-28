@@ -7,7 +7,7 @@ status: active
 description: "Data contract for raw bronze order events, matching the physical schema in Databricks."
 
 servers:
-  dev:
+  - server: dev
     host: dbc-e3761da8-7d95.cloud.databricks.com
     type: databricks
     catalog: workspace
